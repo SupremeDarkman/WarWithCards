@@ -2,7 +2,7 @@
 #include <iostream>
 Player::Player()
 {
-	setPoints(0);
+    setPoints(0);
 }
 
 Card Player::pullCard()
@@ -19,12 +19,12 @@ Card Player::pullCard()
 
 short Player::getPoints() const
 {
-	return this->points;
+    return this->points;
 }
 
 std::vector<Card>& Player::getPlayerDeck()
 {
-	return playerDeck;
+    return playerDeck;
 }
 
 size_t Player::cntPlayerDeck()
@@ -39,13 +39,13 @@ void Player::setPoints(short pp)
 
 void Player::dealCards(Deck& deck)
 {
-	playerDeck.clear();
+    playerDeck.clear();
 
 	for (unsigned i = 0, count = 0; count < 10; i += 3)
-	{
+    {
 		playerDeck.push_back(deck.DealCard());
-		count++;
-	}
+        count++;
+    }
 }
 
 void Player::printCards() const
@@ -73,7 +73,7 @@ void Player::printCards() const
 		}
 		std::cout << " Suit: ";
 		switch (playerDeck[i].suit)
-		{
+{
 		case Suit::Clubs: std::cout << "Clubs"; break;
 		case Suit::Diamonds: std::cout << "Diamonds"; break;
 		case Suit::Hearts: std::cout << "Hearths"; break;
@@ -86,9 +86,9 @@ void Player::printCards() const
 }
 
 void Player::incrementPoint()
-{
+    {
 	this->points++;
-}
+    }
 
 void Player::decrementPoint()
 {

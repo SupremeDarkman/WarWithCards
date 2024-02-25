@@ -17,7 +17,6 @@ public:
 	void printCards() const;
 	void incrementPoint();
 	void decrementPoint();
-
 private:
 	short points;
 	std::vector<Card> playerDeck;
