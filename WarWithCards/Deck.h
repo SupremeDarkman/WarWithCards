@@ -1,9 +1,7 @@
 #pragma once
 #include "App.h"
 #include <vector>
-#include <SDL.h>
 const unsigned short DECK_CAPACITY = 52;
-
 enum Suit
 {
 	Clubs,
@@ -32,9 +30,10 @@ enum Face
 
 struct Card
 {
-	Suit suit;
-	Face face;
-	short value;
+	Suit suit = {};
+	Face face = {};
+	unsigned short value = 0;
+	SDL_Texture* texture = nullptr;
 
 };
 
@@ -42,6 +41,7 @@ class Deck
 {
 public:
 	Deck();
+	~Deck();
 	void print() const;
 	Card DealCard();
 	void riffleShuffle();
@@ -49,3 +49,4 @@ public:
 private:
 	std::vector<Card> deck;
 };
+

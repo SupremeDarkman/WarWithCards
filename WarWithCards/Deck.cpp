@@ -5,11 +5,33 @@
 
 Deck::Deck() : deck(DECK_CAPACITY)
 {
+	const char* const arrSuit[4] = { "spades", "hearts", "diamonds", "clubs" };
+	const char* const arrFace[13] = { "2", "3", "4", "5", "6" , "7" , "8" , "9" , "10" , "11" , "12" , "13", "14" };
+
+	SDL_Renderer* renderer = App::getInstance().getRenderer();
 	for (unsigned i = 0; i < DECK_CAPACITY; i++)
 	{
 		deck[i].suit = Suit(i % 4);
 		deck[i].face = Face(i % 13);
 		deck[i].value = deck[i].face + 2; // start from 2, not 0
+		std::string filePathRoot = "assets/cards/";
+		std::string filePath = filePathRoot.append(arrFace[i % 13]) + "_of_" + arrSuit[i % 4] + ".png";
+		deck[i].texture = App::getInstance().loadTexture(filePath, renderer);
+		if (!deck[i].texture)
+			std::cerr << "Failed to load texture for card " << SDL_GetError() << std::endl;
+
+	}
+}
+
+Deck::~Deck()
+{
+	for (unsigned i = 0; i < DECK_CAPACITY; ++i)
+	{
+		if (deck[i].texture != nullptr)
+		{
+			SDL_DestroyTexture(deck[i].texture);
+			deck[i].texture = nullptr;
+		}
 	}
 }
 

@@ -1,6 +1,4 @@
 #pragma once
-#include <vector>
-#include "Deck.h"
 #include "Player.h"
 
 class Manager

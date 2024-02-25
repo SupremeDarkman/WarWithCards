@@ -71,10 +71,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\A\Desktop\SDL2-2.30.0\include;C:\Users\A\Desktop\SDL2_ttf-2.22.0\include;C:\Users\A\Desktop\SDL2_image-2.8.2\include;C:\Users\Aspy\Desktop\EGT\SDL2\SDL2_mixer-2.8.0\include;C:\Users\Aspy\Desktop\EGT\SDL2\SDL2_ttf-2.22.0\include;C:\Users\Aspy\Desktop\EGT\SDL2\SDL2-2.30.0\include;C:\Users\Aspy\Desktop\EGT\SDL2\SDL2_image-2.8.2\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\A\Desktop\SDL2-2.30.0\include;C:\Users\A\Desktop\SDL2_ttf-2.22.0\include;C:\Users\A\Desktop\SDL2_image-2.8.2\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\A\Desktop\SDL2-2.30.0\include;C:\Users\A\Desktop\SDL2_ttf-2.22.0\include;C:\Users\A\Desktop\SDL2_image-2.8.2\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>C:\Users\A\Desktop\SDL2-2.30.0\include;C:\Users\A\Desktop\SDL2_ttf-2.22.0\include;C:\Users\A\Desktop\SDL2_image-2.8.2\include</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -115,7 +115,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\A\Desktop\SDL2_image-2.8.2\lib\x64;C:\Users\A\Desktop\SDL2-2.30.0\lib\x64;C:\Users\A\Desktop\SDL2_ttf-2.22.0\lib\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,7 +133,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\A\Desktop\SDL2_image-2.8.2\lib\x64;C:\Users\A\Desktop\SDL2-2.30.0\lib\x64;C:\Users\A\Desktop\SDL2_ttf-2.22.0\lib\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

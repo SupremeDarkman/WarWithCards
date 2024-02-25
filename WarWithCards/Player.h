@@ -1,7 +1,5 @@
 #pragma once
 #include "Deck.h"
-#include <stdio.h>
-#include <vector>
 class Player
 {
 public:
@@ -17,7 +15,6 @@ public:
 	void printCards() const;
 	void incrementPoint();
 	void decrementPoint();
-
 private:
 	short points;
 	std::vector<Card> playerDeck;
