@@ -109,6 +109,10 @@ void Deck::riffleShuffle()
 
 }
 
+std::vector<Card> Deck::getDeck() const
+{
+	return deck;
+}
 void Deck::shuffle()
 {
 	srand(unsigned(time(NULL)));

@@ -2,6 +2,7 @@
 #include "App.h"
 #include <vector>
 const unsigned short DECK_CAPACITY = 52;
+
 enum Suit
 {
 	Clubs,
