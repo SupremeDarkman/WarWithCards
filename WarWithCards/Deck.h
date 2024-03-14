@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DECK_H
+#define DECK_H
 #include "App.h"
 #include <vector>
 const unsigned short DECK_CAPACITY = 52;
@@ -47,7 +48,8 @@ public:
 	Card DealCard();
 	void riffleShuffle();
 	void shuffle();
+    std::vector<Card>& getDeck();
 private:
 	std::vector<Card> deck;
 };
-
+#endif
