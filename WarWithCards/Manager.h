@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MANAGER_H
+#define MANAGER_H
 #include "Player.h"
 
 class Manager
@@ -36,4 +37,4 @@ private:
 	unsigned getWinner();
 	bool registerWinner(std::vector<Card>& deskDeck, unsigned winner);
 };
-
+#endif
