@@ -344,4 +344,3 @@ bool Manager::registerWinner(std::vector<Card>& deskDeck, unsigned winner)
 	}
 	return true;
 }
-
