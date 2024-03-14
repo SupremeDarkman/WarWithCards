@@ -1,19 +1,15 @@
 #include "App.h"
-#include "Player.h"
 #include <iostream>
 
 const unsigned CARD_DEALED = 10;
 
-App::App()
-{
-}
-
-App::App(Player& player1, Player& player2, Player& player3)
+App::App(const std::vector<Player>& pl)
 	:backCardTexture(nullptr), card1Texture(nullptr), card2Texture(nullptr), card3Texture(nullptr), card4Texture(nullptr),
 	card5Texture(nullptr), card6Texture(nullptr), card7Texture(nullptr), card8Texture(nullptr), card9Texture(nullptr),
 	card10Texture(nullptr)
 
 {
+	players = pl;
 	window = NULL;
 	renderer = NULL;
 	running = true;
@@ -46,15 +42,23 @@ bool App::init(const std::string title, int xpos, int ypos, int width, int heigh
 		return false;
 
 	}
-	SDL_Texture* card2ClubsTexture1 = loadTexture("assets/cards/backCard_120.png", renderer);
-	if (!card2ClubsTexture1)
+	SDL_SetRenderDrawColor(renderer, 0x00, 0xCA, 0xAC, 0xFF);
+	SDL_Texture* backgroundTex = loadTexture("assets/cards/background.jpg", renderer);
+	if (!backgroundTex) return false;
+	SDL_Surface* tempSurface = getSurface("assets/cards/background.jpg");
+	backgroundTexture = SDL_CreateTextureFromSurface(renderer, tempSurface);
+	int w, h;
+	SDL_GetWindowSize(window, &w, &h);
+	dRectBackground = { 0,0,w,h };
+	SDL_Texture* backCardTexture = loadTexture("assets/cards/backCard_120.png", renderer);
+	if (!backCardTexture)
 		return false;
 
-	SDL_Surface* tempSurface = getSurface("assets/cards/backCard_120.png");
+	tempSurface = getSurface("assets/cards/backCard_120.png");
 	card1Texture = SDL_CreateTextureFromSurface(renderer, tempSurface);
 	SDL_SetTextureAlphaMod(card1Texture, 0);
 
-	SDL_QueryTexture(card2ClubsTexture1, 0, 0, &tw, &th);
+	SDL_QueryTexture(backCardTexture, 0, 0, &tw, &th);
 
 	dRectCard1 = { 0,150, tw, th };
 	dRectCard2 = { 0,152, tw, th };
@@ -77,8 +81,11 @@ bool App::ttf_init()
 		return false;
 
 	TTF_Font* font1 = TTF_OpenFont("assets/fonts/Arcade.ttf", 25);
+	TTF_Font* font2 = TTF_OpenFont("assets/fonts/segoepr.ttf", 45);
+	TTF_Font* fontPlayer = TTF_OpenFont("assets/fonts/segoepr.ttf", 30);
 
-	if (nullptr == font1)
+
+	if (nullptr == font1 || nullptr == font2 || nullptr == fontPlayer)
 		return false;
 
 	SDL_Surface* tempSurfaceText = nullptr;
@@ -89,11 +96,23 @@ bool App::ttf_init()
 	tempSurfaceText = TTF_RenderText_Blended(font1, "Deal", { 0x00, 0x00, 0x00, 0xFF });
 	textDealTexture = SDL_CreateTextureFromSurface(renderer, tempSurfaceText);
 
+	tempSurfaceText = TTF_RenderText_Blended(font2, "Cannot Click", { 0x00, 0x00, 0x00, 0xFF });
+	textErrorTexture = SDL_CreateTextureFromSurface(renderer, tempSurfaceText);
+
+	tempSurfaceText = TTF_RenderText_Blended(fontPlayer, "Player 1", { 0x00,0x00,0x00,0xFF });
+	textPlayer1Texture = SDL_CreateTextureFromSurface(renderer, tempSurfaceText);
+
 	SDL_QueryTexture(textStartTexture, 0, 0, &tw, &th);
 	dRectTextStart = { 5, 355, tw , th };
 
 	SDL_QueryTexture(textDealTexture, 0, 0, &tw, &th);
 	dRectTextDeal = { 95, 355, tw , th };
+
+	SDL_QueryTexture(textErrorTexture, 0, 0, &tw, &th);
+	dRectTextError = { 300, 50, tw, th };
+
+	SDL_QueryTexture(textPlayer1Texture, 0, 0, &tw, &th);
+	dRectTextPlayer1 = { 0, 100, tw, th };
 
 	SDL_FreeSurface(tempSurfaceText);
 	TTF_CloseFont(font1);
@@ -133,8 +152,11 @@ SDL_Texture* App::loadTexture(const std::string filePath, SDL_Renderer* renderer
 
 void App::render()
 {
-	SDL_SetRenderDrawColor(renderer, 0xBB, 0xAA, 0xDD, 0xFF);
 	SDL_RenderClear(renderer);
+	SDL_RenderCopy(renderer, backgroundTexture, nullptr, &dRectBackground);
+
+	//SDL_QueryTexture(card.texture, 0, 0, &tw, &th);
+	//drawTexture(card.texture, 200, 200, tw, th, SDL_FLIP_NONE); // where to go on the screen
 
 	SDL_RenderCopy(renderer, card1Texture, nullptr, &dRectCard1);
 	SDL_RenderCopy(renderer, card1Texture, nullptr, &dRectCard2);
@@ -149,26 +171,47 @@ void App::render()
 
 	dRectButtonStart = { 0, 350, 70, 30 };
 	dRectButtonDeal = { 80, 350, 70, 30 };
-	SDL_SetRenderDrawColor(renderer, 0x00, 0xCA, 0xAC, 0xFF);
 	SDL_RenderFillRect(renderer, &dRectButtonStart);
 	SDL_RenderFillRect(renderer, &dRectButtonDeal);
 
 	SDL_RenderCopy(renderer, textStartTexture, nullptr, &dRectTextStart);
 	SDL_RenderCopy(renderer, textDealTexture, nullptr, &dRectTextDeal);
+	SDL_RenderCopy(renderer, textPlayer1Texture, nullptr, &dRectTextPlayer1);
 
 
 	SDL_RenderPresent(renderer);
 }
+void App::loadTextureOnDeck(Deck& deck)
+{
+	const char* const arrSuit[4] = { "spades", "hearts", "diamonds", "clubs" };
+	const char* const arrFace[13] = { "2", "3", "4", "5", "6" , "7" , "8" , "9" , "10" , "11" , "12" , "13", "14" };
+	for (int i = 0; i < deck.getDeck().size(); i++)
+	{
+		std::string filePathRoot = "assets/cards/";
+		filePathRoot.append(arrFace[i % 13]).append("_of_").append(arrSuit[i % 4]).append(".png");
+		SDL_Texture* tex = loadTexture(filePathRoot, renderer);
+		deck.getDeck()[i].texture = tex;
+		if (!deck.getDeck()[i].texture)
+			std::cerr << "Failed to load texture for card " << SDL_GetError() << std::endl;
+	}
+}
 
+void App::drawTexture(SDL_Texture* tex, int x, int y, int width, int heigth, SDL_RendererFlip flip)
+{
+	SDL_Rect srcRect = { 0, 0, width, heigth }; // coord from the texture
+	SDL_Rect dstRect = { x,y, width, heigth };
+	SDL_RenderCopyEx(renderer, tex, &srcRect, &dstRect, 0, 0, flip);
+}
 
 SDL_Renderer* App::getRenderer()
 {
 	return renderer;
 }
 
-void App::handleEvents()
+void App::handleEvents(Deck& deck)
 {
 	SDL_Event event;
+	static bool wasPressed = false;
 	if (SDL_PollEvent(&event))
 	{
 		switch (event.type)
@@ -189,15 +232,39 @@ void App::handleEvents()
 			int msx, msy;
 			if (event.button.button == SDL_BUTTON_LEFT)
 			{
+
 				SDL_GetMouseState(&msx, &msy);
 				if (isClickableRectClicked(&dRectButtonStart, mouseDownX, mouseDownY, msx, msy))
 				{
-					std::cout << " CLICKED START";
-					SDL_SetTextureAlphaMod(card1Texture, 255);
+					if (wasPressed)
+					{
+						std::cout << "cannot click again";
+						SDL_SetTextureAlphaMod(textErrorTexture, 255);
+						SDL_RenderCopy(renderer, textErrorTexture, nullptr, &dRectTextError);
+						SDL_RenderPresent(renderer);
+						SDL_Delay(1000);
+						SDL_SetTextureAlphaMod(textErrorTexture, 0);
+					}
+					else
+					{
+						wasPressed = true;
+						std::cout << " CLICKED START";
+						for (unsigned i = 0; i < players.size(); i++)
+						{
+							players[i].dealCards(deck);
+						}
+
+						SDL_SetTextureAlphaMod(textStartTexture, 128);
+						SDL_SetTextureAlphaMod(card1Texture, 255);
+					}
 				}
 				else if (isClickableRectClicked(&dRectButtonDeal, mouseDownX, mouseDownY, msx, msy))
 				{
 					std::cout << " CLICKED DEAL";
+					Card c = players[0].pullCard();
+					SDL_QueryTexture(c.texture, 0, 0, &tw, &th);
+
+					drawTexture(c.texture, 200, 250, tw, th, SDL_FLIP_NONE);
 				}
 				else
 				{
@@ -220,6 +287,7 @@ void App::DestroySDL()
 {
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
+	IMG_Quit();
 	SDL_Quit();
 }
 
